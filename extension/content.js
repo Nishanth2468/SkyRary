@@ -23,7 +23,13 @@ function addSonicGuardButton() {
         btn.innerText = "⏳ Scanning Code...";
         
         // 1. We grab the diff data from the current page
-        const prUrl = window.location.href + ".diff"; 
+        const match = window.location.href.match(/^(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/\d+)/);
+        if (!match) {
+            alert("Could not determine PR URL.");
+            btn.innerText = "🛡️ Scan with Sonic-Guard";
+            return;
+        }
+        const prUrl = match[1] + ".diff";
         const response = await fetch(prUrl);
         const diffText = await response.text();
         

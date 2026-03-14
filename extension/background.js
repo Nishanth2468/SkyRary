@@ -1,7 +1,7 @@
 // background.js - Listens to content.js and talks to your Python Server
 
 // Change this to your exact ngrok URL!
-const API_URL = "https://atoneable-deena-unpanicky.ngrok-free.dev/api/extension/review";
+const API_URL = "http://localhost:8000/api/extension/review";
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "SCAN_DIFF") {
