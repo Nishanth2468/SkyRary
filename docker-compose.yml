@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  sonic-guard:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app   # hot-reload: code changes reflected without rebuild
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload

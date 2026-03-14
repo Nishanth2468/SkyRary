@@ -1,0 +1,12 @@
+nohup: ignoring input
+INFO:     Will watch for changes in these directories: ['/home/nishanth_t/Sayrays/sonic-guard']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [10041] using StatReload
+🛡️  Starting Sonic-Guard...
+   LLM Provider : gemini
+   Webhook URL  : http://localhost:8000/webhook/github
+   Health check : http://localhost:8000/health
+INFO:     Started server process [10054]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:56540 - "GET /health HTTP/1.1" 200 OK
