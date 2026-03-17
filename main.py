@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 load_dotenv()
@@ -26,6 +27,16 @@ from agents.summary import run_summary_agent
 from github_client import get_pr_diff, post_pr_comment, delete_previous_bot_comments
 
 app = FastAPI(title="Sonic-Guard", version="1.0.0")
+
+@app.get("/")
+async def root():
+    return {
+        "message": "Sonic-Guard Server is running!",
+        "github_webhook_url": "/webhook/github",
+        "docs": "/docs"
+    }
+
+app.mount("/app", StaticFiles(directory="webapp", html=True), name="webapp")
 
 # Allow requests from the Chrome Extension playing on github.com
 app.add_middleware(
@@ -38,6 +49,14 @@ app.add_middleware(
 
 class DiffRequest(BaseModel):
     diff: str
+
+class WebappReviewRequest(BaseModel):
+    repo: str
+    pr_number: int
+
+class AnalyzeFileRequest(BaseModel):
+    code: str
+    filename: str = "untitled"
 
 WEBHOOK_SECRET = os.getenv("GITHUB_WEBHOOK_SECRET", "")
 
@@ -200,6 +219,55 @@ async def extension_review(request: DiffRequest):
 # ──────────────────────────────────────────────────────────────────
 # Health check
 # ──────────────────────────────────────────────────────────────────
+
+
+
+# WebApp API Endpoint
+@app.post("/api/webapp/review")
+async def webapp_review(request: WebappReviewRequest):
+    print(f"[WebApp] Received request for {request.repo}#{request.pr_number}")
+    try:
+        diff, _, _, _ = get_pr_diff(request.repo, request.pr_number)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    if not diff:
+        return []
+    print(f"[WebApp] Fetched {len(diff)} chars to scan...")
+    code_task = asyncio.create_task(asyncio.to_thread(run_code_review_agent, diff))
+    security_task = asyncio.create_task(asyncio.to_thread(run_security_agent, diff))
+    code_findings, security_findings = await asyncio.gather(code_task, security_task)
+    all_findings = code_findings + security_findings
+    return all_findings
+
+
+# ──────────────────────────────────────────────────────────────────
+# VS Code API Endpoint
+# ──────────────────────────────────────────────────────────────────
+@app.post("/api/vscode/review")
+async def vscode_review(request: AnalyzeFileRequest):
+    """
+    Receives code directly from a VS Code Extension.
+    Runs agents and returns JSON immediately for VS Code to render inline diagnostics.
+    """
+    code = request.code
+    filename = request.filename
+    if not code:
+        return []
+        
+    print(f"[VSCode] Receiving {len(code)} chars from {filename} to scan...")
+    
+    # We prefix file code with diff context so the LLM responds correctly
+    diff_simulated = f"File: {filename}\n\n{code}"
+    
+    code_task = asyncio.create_task(asyncio.to_thread(run_code_review_agent, diff_simulated))
+    security_task = asyncio.create_task(asyncio.to_thread(run_security_agent, diff_simulated))
+    code_findings, security_findings = await asyncio.gather(code_task, security_task)
+    
+    all_findings = code_findings + security_findings
+    print(f"[VSCode] Returning {len(all_findings)} total findings to VS Code")
+    
+    return all_findings
+
 
 @app.get("/health")
 async def health_check():

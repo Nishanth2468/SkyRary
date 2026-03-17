@@ -26,6 +26,7 @@ Return a JSON array of findings. Each finding must have exactly these fields:
 - "file": filename string
 - "issue": one clear sentence describing the problem
 - "fix": one clear sentence with the recommended solution
+- "suggested_code": (optional) The exact block of code to replace the buggy line(s). Do NOT use markdown backticks in this field, just the raw code string.
 
 Rules:
 - Maximum 5 findings
@@ -36,8 +37,8 @@ Rules:
 
 Example format:
 [
-  {{"severity": "HIGH", "line": 12, "file": "app.py", "issue": "Variable shadowing — local 'id' shadows built-in", "fix": "Rename to 'user_id' to avoid shadowing the built-in id()"}},
-  {{"severity": "MEDIUM", "line": 5, "file": "app.py", "issue": "Bare except clause catches all exceptions including KeyboardInterrupt", "fix": "Replace 'except:' with 'except Exception as e:'"}}
+  {{"severity": "HIGH", "line": 12, "file": "app.py", "issue": "Variable shadowing — local 'id' shadows built-in", "fix": "Rename to 'user_id' to avoid shadowing the built-in id()", "suggested_code": "user_id = get_user()"}},
+  {{"severity": "MEDIUM", "line": 5, "file": "app.py", "issue": "Bare except clause catches all exceptions including KeyboardInterrupt", "fix": "Replace 'except:' with 'except Exception as e:'", "suggested_code": "except Exception as e:"}}
 ]
 """
 

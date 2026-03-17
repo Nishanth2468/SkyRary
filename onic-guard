@@ -1,0 +1,4 @@
+Help on function create_review in module github.PullRequest:
+
+ccrreeaattee__rreevviieeww(self, commit: 'Opt[github.Commit.Commit]' = NotSet, body: 'Opt[str]' = NotSet, event: 'Opt[str]' = NotSet, comments: 'Opt[list[ReviewComment]]' = NotSet) -> 'github.PullRequestReview.PullRequestReview'
+    :calls: `POST /repos/{owner}/{repo}/pulls/{number}/reviews <https://docs.github.com/en/free-pro-team@latest/rest/pulls/reviews?apiVersion=2022-11-28#create-a-review-for-a-pull-request>`_

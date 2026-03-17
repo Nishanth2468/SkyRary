@@ -1,29 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Sonic-Guard AI Reviewer",
-  "version": "1.0",
-  "description": "Autonomous AI Code Repository Management",
+  "name": "Sonic-Guard AI Scanner",
+  "version": "2.1",
+  "description": "Simplified wrapper + Autonomous PR Monitoring",
   "permissions": [
     "activeTab",
-    "scripting"
+    "tabs",
+    "storage",
+    "alarms",
+    "notifications"
   ],
   "host_permissions": [
-    "https://github.com/*",
     "http://localhost:8000/*",
-    "https://*.ngrok-free.dev/*",
-    "https://*.ngrok-free.app/*"
-  ],
-  "content_scripts": [
-    {
-      "matches": ["https://github.com/*/*/pull/*"],
-      "js": ["content.js"],
-      "css": ["style.css"]
-    }
+    "https://api.github.com/*",
+    "https://github.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_title": "Sonic-Guard"
   }
 }

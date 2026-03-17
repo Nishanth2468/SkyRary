@@ -41,6 +41,11 @@ Rules:
 - If there are security findings, add a "### 🔴 Security Issues" section with bullet points
 - If there are code findings, add a "### 🔍 Code Review" section with bullet points
 - Each bullet: `**filename:line** — issue description` then `💡 **Fix:** suggestion`
+- If you have suggested code for a fix, ALWAYS add it using a standard python markdown block beneath the fix description, so the user knows exactly what to type. Example:
+```python
+# Updated Code
+def new_func(): ...
+```
 - Severity icons: 🔴 CRITICAL  🟠 HIGH  🟡 MEDIUM  🔵 LOW
 - If a section has no findings, omit it entirely
 - Keep total response under 500 words
@@ -66,9 +71,12 @@ def _format_findings_for_prompt(findings: list[dict]) -> str:
         location = f.get('file', 'unknown')
         if f.get('line'):
             location += f":{f['line']}"
-        lines.append(
-            f"{icon} [{f.get('severity','?')}] {location} — {f.get('issue','?')} | Fix: {f.get('fix','?')}"
-        )
+        
+        finding_text = f"{icon} [{f.get('severity','?')}] {location} — {f.get('issue','?')} | Fix: {f.get('fix','?')}"
+        if f.get('suggested_code'):
+             finding_text += f"\n\nSuggested Code Replacement:\n```python\n{f['suggested_code']}\n```"
+             
+        lines.append(finding_text)
     return "\n".join(lines)
 
 

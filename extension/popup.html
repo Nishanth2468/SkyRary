@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonic-Guard WebScanner</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🛡️ SONIC-GUARD</div>
+            <p>AI-Powered Code Review</p>
+        </header>
+
+        <div class="scanner-box">
+            <input type="text" id="pr-url" placeholder="GitHub PR URL..." />
+            <button id="scan-btn">Scan PR</button>
+        </div>
+
+        <div id="repo-settings" style="margin-bottom: 20px; padding: 15px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div>
+                    <h3 style="margin-top: 0; font-size: 14px; margin-bottom: 5px;">PR Monitoring</h3>
+                    <p id="active-repo-name" style="font-size: 13px; color: var(--primary); font-family: monospace; margin: 0;">Detecting repo...</p>
+                </div>
+                <div id="repo-health-container" style="display: none; align-items: center; justify-content: center; flex-direction: column;">
+                    <a id="repo-health-link" href="#" target="_blank" style="text-decoration: none;" title="Repository Code Quality">
+                        <img id="repo-health-badge" src="" alt="RepoHealth Badge" style="max-height: 20px; border-radius: 4px;">
+                    </a>
+                </div>
+            </div>
+            
+            <label style="display: flex; align-items: center; font-size: 13px; gap: 8px; cursor: pointer; margin-bottom: 10px;">
+                <input type="checkbox" id="mute-repo-cb" />
+                Mute notifications for this repository
+            </label>
+            
+            <input type="password" id="gh-token-input" placeholder="GitHub PAT (for private repos)" style="width: 100%; border-radius: 4px; padding: 6px 10px; font-size: 12px; margin-top: 5px; box-sizing: border-box;" />
+            <p style="font-size: 10px; color: #8b949e; margin-top: 5px;">Required only for private repositories or to increase API quota.</p>
+        </div>
+
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p>Wait a few moments, reviewing...</p>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="stats">
+                <div class="stat-card critical">🪲 Critical: <span id="crit-count">0</span></div>
+                <div class="stat-card warning">⚠️ Warnings: <span id="warn-count">0</span></div>
+            </div>
+            
+            <div id="findings-list"></div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

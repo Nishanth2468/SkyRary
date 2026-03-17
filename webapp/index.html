@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonic-Guard WebScanner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🛡️ SONIC-GUARD</div>
+            <p>AI-Powered Code Review</p>
+        </header>
+
+        <div class="scanner-box">
+            <input type="text" id="pr-url" placeholder="Paste GitHub PR URL (e.g., https://github.com/owner/repo/pull/1)" />
+            <button id="scan-btn">Scan PR</button>
+        </div>
+
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p>Scanning PR... This may take a few seconds.</p>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="stats">
+                <div class="stat-card critical">🪲 Critical: <span id="crit-count">0</span></div>
+                <div class="stat-card warning">⚠️ Warning: <span id="warn-count">0</span></div>
+            </div>
+            
+            <div id="findings-list"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
